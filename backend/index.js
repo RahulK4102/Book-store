@@ -38,6 +38,14 @@ app.post('/books',async(req,res)=>{
         console.error(error);
     }
 })
+app.get('/books',async (req,res) => {
+    try {
+        const books = await Books.find({});
+        return res.status(200).json(books);
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
