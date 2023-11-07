@@ -2,10 +2,12 @@ import express from "express";
 import mongoose from "mongoose";
 import { PORT } from "./config.js";
 import { Books } from "./models/bookModel.js";
+import booksRoute from "./routes/booksRoute.js";
 import 'dotenv/config'
+import cors from "cors";
 const app = express();
 app.use(express.json());
-
+app.use(cors());
 
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -13,39 +15,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 }).then(()=>{
     console.log("Connected");
 }).catch((err) => console.log(err));
-
 app.get('/', (req, res) => {
     return res.status(234).send('hello world');
 })
-app.post('/books',async(req,res)=>{
-    try {
-        if(
-            !req.body.title || 
-            !req.body.author || 
-            !req.body.publishYear
-        ){
-            return res.status(400).send({message:'Send all required fields: title,author,publishYear'});
-        };
-
-        const newBook = {
-            title: req.body.title,
-            author: req.body.author,
-            publishYear: req.body.publishYear,
-        }
-        const book = await Books.insertMany(newBook);
-        return res.status(201).send(book);
-    } catch (error) {
-        console.error(error);
-    }
-})
-app.get('/books',async (req,res) => {
-    try {
-        const books = await Books.find({});
-        return res.status(200).json(books);
-    } catch (error) {
-        console.log(error);
-    }
-})
+app.use('/books',booksRoute)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
