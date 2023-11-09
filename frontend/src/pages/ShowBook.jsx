@@ -8,7 +8,7 @@ const ShowBook = () => {
   const [book,setBook] = useState({});
   const[loading,setLoading] = useState(false);
   const {id} = useParams();
-  console.log(book);
+  
   useEffect(()=>{
     setLoading(true);
     axios
